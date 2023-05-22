@@ -6,30 +6,42 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
         <title>Document</title>
-        
+
     </head>
     <body>
         <!-- Header start here-->
-    <header>
-            <h1>DND Fun Game</h1>
-    </header>
-        <!-- Header end here-->
-        <!-- Main start here-->
-    <main>
-            <h1 id="result">You died</h1>
-            
-        <div id="hero" class="hero">
-            <div id="player-container">
-                <div>
-                    <p> Gulkhunir's Hit Point</p>
-                    <div id="hit-point-container" class="">
-                        <p id="damage-point">100</p>
-                    </div>
-                    <div>
-                        <img src="./assets/images/pngegg.png" alt="">
-                    </div>
+        <header>
+            <div id="header-container">
+                <h1>DND Fun Game</h1>
+                <div id="header-right">
+
+                    <button id="dark-mode"><img src="./assets/moon.png" alt=""></button>
+                    <ul>
+                        <li>About Us</li>
+                        <li>Donate Us</li>
+                        <li><a href="./home.html">Start Screen</a></li>
+                        <li>Login</li>
+                    </ul>
                 </div>
             </div>
+        </header>
+        <!-- Header end here-->
+        <!-- Main start here-->
+        <main>
+            <h1 id="result">You died</h1>
+            
+            <div id="hero" class="hero">
+                <div id="player-container">
+                    <div>
+                        <p> Gulkhunir's Hit Point</p>
+                        <div id="hit-point-container" class="">
+                            <p id="player-damage-point">100</p>
+                        </div>
+                        <div>
+                            <img src="./assets/images/pngegg.png" alt="">
+                        </div>
+                    </div>
+                </div>
             <div id="vs-container">
                 <div>
                     <img src="./assets/images/imgbin_shield-sword-weapon-png.png" alt="">
@@ -57,14 +69,14 @@
             </div>
             <div id="monster-stats">
             </div>
-
-        </div>
-           
             
-
+        </div>
+        
+        
+        
     </main>
-     <!-- Main end here-->
-  <!-- Footer start here-->
+    <!-- Main end here-->
+    <!-- Footer start here-->
     <footer>
         <div>
             <h2 id="inventory">Weapons</h2>
@@ -73,6 +85,8 @@
         </div>
     </footer>
     <!-- Footer end here-->
+   
+    
     <script src="./app.js"></script>
 </body>
 </html>
