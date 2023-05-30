@@ -1,16 +1,23 @@
 let damagePoint = document.getElementById("damage-point");
-let result = document.getElementById("result");
-let weaponList = document.getElementById("weapon-list");
-let kacVurdum = document.getElementById("kac-vurdum");
 let playerStats = document.getElementById("player-stats");
-let playerAbility = document.getElementById("player-ability");
+let logBoxInfo = document.getElementById("log-box-info");
+let weaponList = document.getElementById("weapon-list");
 let darkMode = document.getElementById("dark-mode");
-let nameSubmit = document.getElementById("name-submit");
-let maxHitPoint = 100;
-let currentHitPoint = 100;
-let zarCarpani = 0;
-let buttons;
-let attackRoll;
+let result = document.getElementById("result");
+let damage,
+  buttons,
+  armor,
+  playerAC,
+  playerCurrentLevel = 1,
+  profeciencyBonus,
+  modifier = -5,
+  dexModifier = -5,
+  strModifier = -5,
+  d20 = 0,
+  monsterAC = 10;
+montersHitPoint = 22;
+monstersCurrentHitPoint = montersHitPoint;
+
 const abilities = [
   "STRENGTH",
   "DEXTERITY",
@@ -19,6 +26,7 @@ const abilities = [
   "WISDOM",
   "CHARISMA",
 ];
+
 let weaponsDamageList = [
   {
     id: 1,
@@ -172,7 +180,7 @@ let weaponsDamageList = [
   },
   {
     id: 26,
-    name: "War pick",
+    name: "Warpick",
     wDamage: 8,
     wDice: 1,
   },
@@ -236,101 +244,161 @@ let weaponsDamageList = [
     wDamage: 8,
     wDice: 1,
   },
-  {
-    id: 37,
-    name: "Net",
-    wDamage: 0,
-    wDice: 1,
-  },
 ];
-
-for (let i = 0; i < abilities.length; i++) {
-  playerAbility.innerText += ` ${abilities[i]}: \n `;
-
-  console.log(abilities[i]);
+class Player {
+  constructor(
+    name,
+    strength,
+    dexterity,
+    constution,
+    intelligent,
+    wisdom,
+    charisma
+  ) {
+    this.name = name;
+    this.strength = strength;
+    this.dexterity = dexterity;
+    this.constution = constution;
+    this.intelligent = intelligent;
+    this.wisdom = wisdom;
+    this.charisma = charisma;
+  }
 }
 
 darkMode.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
 });
 
-class Player {
-  constructor(name, race, sinif, str, dex, con, int, wis, char) {
-    this.name = name;
-    this.race = race;
-    this.sinif = sinif;
-    this.str = str;
-    this.dex = dex;
-    this.char = char;
-    this.con = con;
-    this.wis = wis;
-    this.int = int;
+let mehmet = new Player("GULKHUNIR", 13, 16, 11, 12, 15, 9);
+
+function attackRoll() {
+  d20 = Math.ceil(Math.random() * 20);
+}
+
+function critHitCalc(x, y, m) {
+  if (y === 1) {
+    damage = Math.ceil(Math.random() * x) + Math.ceil(Math.random() * x) + m;
+  } else if (y === 2) {
+    damage =
+      Math.ceil(Math.random() * x) +
+      Math.ceil(Math.random() * x) +
+      Math.ceil(Math.random() * x) +
+      Math.ceil(Math.random() * x) +
+      m;
+  }
+  logBoxInfo.innerText += `Moradin'in kutsamasını silahında hissettin. Canavara tam ${damage} hasar verdin. \n`;
+
+  hitPointCalc();
+}
+
+function hitCalc(x, y, m) {
+  if (y === 1) {
+    damage = Math.ceil(Math.random() * x) + m;
+  } else if (y === 2) {
+    damage = Math.ceil(Math.random() * x) + Math.ceil(Math.random() * x) + m;
+  }
+  logBoxInfo.innerText += `Canavara tam ${damage} hasar verdin. \n`;
+  hitPointCalc();
+}
+
+function hitPointCalc() {
+  monstersCurrentHitPoint -= damage;
+  damagePoint.innerHTML = monstersCurrentHitPoint;
+  let yuzdeCan = (monstersCurrentHitPoint / montersHitPoint) * 200;
+  damagePoint.style.width = `${yuzdeCan}px`;
+  if (monstersCurrentHitPoint <= 0) {
+    buttons.style.disabled = "true";
+    result.style.visibility = "visible";
   }
 }
 
-// nameSubmit.addEventListener("click", () => {
-
-// });
-
-let gulkhunir = new Player(
-  "Gulkhunir",
-  "Dwarf",
-  "Warrior",
-  17,
-  15,
-  15,
-  12,
-  14,
-  9
-);
-
-for (let i = 0; i < weaponsDamageList.length; i++) {
-  let weapon = document.createElement("button");
-  weapon.innerText = `${weaponsDamageList[i].name} HIT`;
-  buttons = weaponList.appendChild(weapon);
-  buttons.addEventListener("click", weaponHit);
-}
-
-function weaponHit(e) {
-  let text = e.target.innerHTML.split(" ")[0];
+function createButton() {
   for (let i = 0; i < weaponsDamageList.length; i++) {
-    if (text == weaponsDamageList[i].name) {
-      attackRoll = Math.ceil(Math.random() * 20);
-      if (attackRoll === 20) {
-        zarCarpani = weaponsDamageList[i].wDamage;
-        let damage = Math.ceil(Math.random() * zarCarpani) + zarCarpani;
-        if (damage > 0) {
-          kacVurdum.innerText += `CRITICAL HIT!!! Canavara ${weaponsDamageList[i].name} ile tam ${damage} hasar verdiniz. \n`;
+    let weapon = document.createElement("button");
+    weapon.innerText = `${weaponsDamageList[i].name} HIT`;
+    buttons = weaponList.appendChild(weapon);
+    buttons.addEventListener("click", (e) => {
+      let text = e.target.innerHTML.split(" ")[0];
+      if (text === weaponsDamageList[i].name) {
+        if (weaponsDamageList[i].id >= 29) {
+          attackRoll();
+          if (d20 === 1) {
+            logBoxInfo.innerText += "Sendeledin ve saldırın boşa gitti! \n";
+          }
+
+          d20 += dexModifier + profeciencyBonus;
+          if (d20 < monsterAC) {
+            logBoxInfo.innerText += "Silahın canavarın zırhında patladı. \n";
+          }
+          if (d20 === 20) {
+            critHitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              dexModifier
+            );
+          } else if (d20 >= monsterAC) {
+            hitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              dexModifier
+            );
+          }
         } else {
-          kacVurdum.innerText += `Canavar saldırından hasar almadı. \n`;
+          attackRoll();
+          if (d20 === 1) {
+            logBoxInfo.innerText += "Sendeledin ve saldırın boşa gitti! \n";
+          }
+          d20 += strModifier + profeciencyBonus;
+          if (d20 < monsterAC) {
+            logBoxInfo.innerText += "Silahın canavarın zırhında patladı. \n";
+          }
+          if (d20 === 20) {
+            critHitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              strModifier
+            );
+          } else if (d20 >= monsterAC) {
+            hitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              strModifier
+            );
+          }
         }
-        currentHitPoint -= damage;
-        damagePoint.innerText = currentHitPoint;
-        let yuzdeCan = (currentHitPoint / maxHitPoint) * 200;
-        damagePoint.style.width = `${yuzdeCan}px`;
-        if (currentHitPoint <= 0) {
-          result.style.visibility = "visible";
-        }
-      } else if (attackRoll === 1) {
-        kacVurdum.innerText += `FAIL Canavar saldırından kaçınmanın bir yolunu buldu. \n`;
       } else {
-        zarCarpani = weaponsDamageList[i].wDamage;
-        let damage = Math.ceil(Math.random() * zarCarpani);
-        if (damage > 0) {
-          kacVurdum.innerText += `Canavara ${weaponsDamageList[i].name} ile tam ${damage} hasar verdiniz.\n`;
-        } else {
-          kacVurdum.innerText += `Canavar saldırından kaçınmanın bir yolunu buldu.\n`;
-        }
-        currentHitPoint -= damage;
-        damagePoint.innerHTML = currentHitPoint;
-        let yuzdeCan = (currentHitPoint / maxHitPoint) * 200;
-        damagePoint.style.width = `${yuzdeCan}px`;
-        if (currentHitPoint <= 0) {
-          result.style.visibility = "visible";
-        }
+        console.log("Bu silah çantanızda bulunmamaktadır.");
       }
-    }
+    });
   }
 }
+createButton();
+if (playerStats) {
+  playerStats.innerText = `${mehmet.name}'s Stats:\n\nSTRENGTH: ${mehmet.strength}\nDEXTERITY: ${mehmet.dexterity}\nCONSTUTION: ${mehmet.constution}\nINTELLIGENT: ${mehmet.intelligent}\nWISDOM: ${mehmet.wisdom}\nCHARISMA: ${mehmet.charisma}`;
+}
 
-playerStats.innerText = `${gulkhunir.name}'s Stats:\nSTRENGTH: ${gulkhunir.str}\nDEXTERITY: ${gulkhunir.dex}\nCONSTUTION: ${gulkhunir.con}\nINTELLIGENT: ${gulkhunir.int}\nWISDOM: ${gulkhunir.wis}\nCHARISMA: ${gulkhunir.char}`;
+if (playerCurrentLevel <= 4) {
+  profeciencyBonus = 2;
+} else if (playerCurrentLevel <= 8) {
+  profeciencyBonus = 3;
+} else if (playerCurrentLevel <= 12) {
+  profeciencyBonus = 4;
+} else if (playerCurrentLevel <= 16) {
+  profeciencyBonus = 5;
+} else if (playerCurrentLevel <= 20) {
+  profeciencyBonus = 6;
+}
+
+function strModifierCalc(player) {
+  strModifier = -5;
+  strModifier += Math.floor(0.5 * player.strength);
+}
+
+strModifierCalc(mehmet);
+
+function dexModifierCalc(player) {
+  dexModifier = -5;
+  dexModifier += Math.floor(0.5 * player.dexterity);
+}
+
+dexModifierCalc(mehmet);

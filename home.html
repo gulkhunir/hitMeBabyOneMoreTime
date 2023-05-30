@@ -10,20 +10,32 @@
     </head>
     <body>
         <!-- Header start here-->
-    <header>
-            <h1 id="header-container">DND Fun Game</h1>
-    </header>
+        <header>
+            <div id="header-container">
+                <h1>DND Fun Game</h1>
+                <div id="header-right">
+
+                    <button id="dark-mode"><img src="./assets/moon.png" alt=""></button>
+                    <ul>
+                        <li>About Us</li>
+                        <li>Donate Us</li>
+                        <li><a href="./home.html">Start Screen</a></li>
+                        <li>Login</li>
+                    </ul>
+                </div>
+            </div>
+        </header>
         <!-- Header end here-->
         <!-- Main start here-->
     <main>
+        <img id="bg-img" src="./assets/images/1107324.jpg" alt="dnd-arkaplan">
         <form>
             <label for="pname"> Karakter ismi : </label>
             <input type="text" id="pname" name="pname" >
             <button id="name-submit"> Kaydet </button>
         </form>
 
-        <div id="weapon-list"></div>
-        <div id="damage-point"></div>
+        
     </main>
     <!-- Main end here-->
     <!-- Footer start here-->
