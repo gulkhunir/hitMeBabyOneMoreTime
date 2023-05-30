@@ -10,30 +10,42 @@
     </head>
     <body>
         <!-- Header start here-->
-        <header>
-            <div id="header-container">
-                <h1>DND Fun Game</h1>
-                <div id="header-right">
-
-                    <button id="dark-mode"><img src="./assets/moon.png" alt=""></button>
-                    <ul>
-                        <li>About Us</li>
-                        <li>Donate Us</li>
-                        <li><a href="./home.html">Start Screen</a></li>
-                        <li>Login</li>
-                    </ul>
-                </div>
-            </div>
-        </header>
         <!-- Header end here-->
         <!-- Main start here-->
-    <main>
-        <img id="bg-img" src="./assets/images/1107324.jpg" alt="dnd-arkaplan">
-        <form>
-            <label for="pname"> Karakter ismi : </label>
-            <input type="text" id="pname" name="pname" >
-            <button id="name-submit"> Kaydet </button>
-        </form>
+        <main>
+            <div id="main-container">
+                 <img id="bg-img" src="./assets/images/1107324.jpg" alt="dnd-arkaplan">
+                <div id="right-container">
+                    <h1 id="select-class"><button id="select-class-info">
+                        Select Class
+                    </button></h1>
+                </div>
+                <div id="left-container">
+                    <div id="select-race"><button id="select-race-info">
+                        SELECT RACE
+                    </button> </div>
+                </div>
+                <div id="middle-container">
+                    <div id="stat-point">
+                        <button id="stat-point-info">
+                            STAT Point
+                        </button></div>
+                </div>
+                <div id="bottom-container">
+                    <form>
+                        <label id="lname" for="pname"> Name : </label>
+                        <input type="text" id="pname" name="pname" >
+                        <button id="name-submit"> Launch &raquo; </button>
+                    </form>
+                </div>
+
+            </div>
+
+
+
+        <!-- <form>
+            
+        </form> -->
 
         
     </main>
