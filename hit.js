@@ -1,10 +1,32 @@
-let attackButton = document.getElementById("attack-button");
-let result = document.getElementById("result");
-let weaponList = document.getElementById("weapon-list");
 let damagePoint = document.getElementById("damage-point");
-let damage, buttons, d20;
-let montersHitPoint = 100;
-let monstersCurrentHitPoint = 100;
+let playerStats = document.getElementById("player-stats");
+let logBoxInfo = document.getElementById("log-box-info");
+let weaponList = document.getElementById("weapon-list");
+let darkMode = document.getElementById("dark-mode");
+let result = document.getElementById("result");
+let damage,
+  buttons,
+  armor,
+  playerAC,
+  playerCurrentLevel = 1,
+  profeciencyBonus,
+  modifier = -5,
+  dexModifier = -5,
+  strModifier = -5,
+  d20 = 0,
+  monsterAC = 10;
+montersHitPoint = 22;
+monstersCurrentHitPoint = montersHitPoint;
+
+const abilities = [
+  "STRENGTH",
+  "DEXTERITY",
+  "CONSTUTION",
+  "INTELLIGENT",
+  "WISDOM",
+  "CHARISMA",
+];
+
 let weaponsDamageList = [
   {
     id: 1,
@@ -158,7 +180,7 @@ let weaponsDamageList = [
   },
   {
     id: 26,
-    name: "War pick",
+    name: "Warpick",
     wDamage: 8,
     wDice: 1,
   },
@@ -222,34 +244,59 @@ let weaponsDamageList = [
     wDamage: 8,
     wDice: 1,
   },
-  {
-    id: 37,
-    name: "Net",
-    wDamage: 0,
-    wDice: 1,
-  },
 ];
+class Player {
+  constructor(
+    name,
+    strength,
+    dexterity,
+    constution,
+    intelligent,
+    wisdom,
+    charisma
+  ) {
+    this.name = name;
+    this.strength = strength;
+    this.dexterity = dexterity;
+    this.constution = constution;
+    this.intelligent = intelligent;
+    this.wisdom = wisdom;
+    this.charisma = charisma;
+  }
+}
+
+darkMode.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
+let mehmet = new Player("GULKHUNIR", 13, 16, 11, 12, 15, 9);
 
 function attackRoll() {
   d20 = Math.ceil(Math.random() * 20);
 }
 
-function critHitCalc(x, y) {
+function critHitCalc(x, y, m) {
   if (y === 1) {
-    damage = Math.ceil(Math.random() * x) + x;
+    damage = Math.ceil(Math.random() * x) + Math.ceil(Math.random() * x) + m;
   } else if (y === 2) {
     damage =
-      Math.ceil(Math.random() * x) + Math.ceil(Math.random() * x) + 2 * x;
+      Math.ceil(Math.random() * x) +
+      Math.ceil(Math.random() * x) +
+      Math.ceil(Math.random() * x) +
+      Math.ceil(Math.random() * x) +
+      m;
   }
+  logBoxInfo.innerText += `Moradin'in kutsamasını silahında hissettin. Canavara tam ${damage} hasar verdin. \n`;
+
   hitPointCalc();
 }
 
-function hitCalc(x, y) {
+function hitCalc(x, y, m) {
   if (y === 1) {
-    damage = Math.ceil(Math.random() * x);
+    damage = Math.ceil(Math.random() * x) + m;
   } else if (y === 2) {
-    damage = Math.ceil(Math.random() * x) + Math.ceil(Math.random() * x);
+    damage = Math.ceil(Math.random() * x) + Math.ceil(Math.random() * x) + m;
   }
+  logBoxInfo.innerText += `Canavara tam ${damage} hasar verdin. \n`;
   hitPointCalc();
 }
 
@@ -272,16 +319,84 @@ function createButton() {
     buttons.addEventListener("click", (e) => {
       let text = e.target.innerHTML.split(" ")[0];
       if (text === weaponsDamageList[i].name) {
-        attackRoll();
-        if (d20 === 20) {
-          critHitCalc(weaponsDamageList[i].wDamage, weaponsDamageList[i].wDice);
-        } else if (d20 === 1) {
-          console.log("Misss");
+        if (weaponsDamageList[i].id >= 29) {
+          attackRoll();
+          if (d20 === 1) {
+            logBoxInfo.innerText += "Sendeledin ve saldırın boşa gitti! \n";
+          }
+
+          d20 += dexModifier + profeciencyBonus;
+          if (d20 < monsterAC) {
+            logBoxInfo.innerText += "Silahın canavarın zırhında patladı. \n";
+          }
+          if (d20 === 20) {
+            critHitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              dexModifier
+            );
+          } else if (d20 >= monsterAC) {
+            hitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              dexModifier
+            );
+          }
         } else {
-          hitCalc(weaponsDamageList[i].wDamage, weaponsDamageList[i].wDice);
+          attackRoll();
+          if (d20 === 1) {
+            logBoxInfo.innerText += "Sendeledin ve saldırın boşa gitti! \n";
+          }
+          d20 += strModifier + profeciencyBonus;
+          if (d20 < monsterAC) {
+            logBoxInfo.innerText += "Silahın canavarın zırhında patladı. \n";
+          }
+          if (d20 === 20) {
+            critHitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              strModifier
+            );
+          } else if (d20 >= monsterAC) {
+            hitCalc(
+              weaponsDamageList[i].wDamage,
+              weaponsDamageList[i].wDice,
+              strModifier
+            );
+          }
         }
+      } else {
+        console.log("Bu silah çantanızda bulunmamaktadır.");
       }
     });
   }
 }
 createButton();
+
+playerStats.innerText = `${mehmet.name}'s Stats:\n\nSTRENGTH: ${mehmet.strength}\nDEXTERITY: ${mehmet.dexterity}\nCONSTUTION: ${mehmet.constution}\nINTELLIGENT: ${mehmet.intelligent}\nWISDOM: ${mehmet.wisdom}\nCHARISMA: ${mehmet.charisma}`;
+
+if (playerCurrentLevel <= 4) {
+  profeciencyBonus = 2;
+} else if (playerCurrentLevel <= 8) {
+  profeciencyBonus = 3;
+} else if (playerCurrentLevel <= 12) {
+  profeciencyBonus = 4;
+} else if (playerCurrentLevel <= 16) {
+  profeciencyBonus = 5;
+} else if (playerCurrentLevel <= 20) {
+  profeciencyBonus = 6;
+}
+
+function strModifierCalc(player) {
+  strModifier = -5;
+  strModifier += Math.floor(0.5 * player.strength);
+}
+
+strModifierCalc(mehmet);
+
+function dexModifierCalc(player) {
+  dexModifier = -5;
+  dexModifier += Math.floor(0.5 * player.dexterity);
+}
+
+dexModifierCalc(mehmet);
